@@ -1,0 +1,10 @@
+{
+  "name": "mi-bot",
+  "version": "1.0.0",
+  "description": "Bot para WhatsApp",
+  "main": "bot.js",
+  "license": "MIT",
+  "dependencies": {
+    "venom-bot": "^5.3.0"
+  }
+}
