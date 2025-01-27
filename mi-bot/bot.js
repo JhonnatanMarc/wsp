@@ -1,24 +1,35 @@
 const venom = require('venom-bot');
-const path = require('path'); // Para manejar rutas de archivos
+const path = require('path');
 
-venom.create({
-  session: 'whatsapp-session',
-  headless: false,
-  useChrome: true,
-  debug: true,
-  logQR: true,
-  browserWS: false,
-  chromiumFlags: ['--no-sandbox', '--disable-setuid-sandbox'],
-})
-  .then((client) => start(client))
-  .catch((error) => console.error('Error al iniciar Venom:', error));
+const sessionNames = ['whatsapp-session1', 'whatsapp-session2']; // Nombres de las sesiones
+
+// Crea múltiples clientes de WhatsApp
+const clients = [];
+
+sessionNames.forEach(sessionName => {
+  venom.create({
+    session: sessionName, // Nombre de la sesión
+    headless: true, // Ejecutar en modo headless (sin abrir navegador)
+    useChrome: false,
+    debug: true,
+    logQR: true, // Mostrar código QR en consola
+    browserWS: false,
+  })
+    .then(client => {
+      clients.push(client);
+      start(client);
+    })
+    .catch(error => {
+      console.error(`Error al iniciar Venom para ${sessionName}:`, error);
+    });
+});
 
 function start(client) {
   let catalogSent = false; // Bandera para verificar si ya se envió el catálogo
   let waitingForResponse = false; // Bandera para verificar si se espera una respuesta
 
   client.onMessage(async (message) => {
-    console.log('Mensaje recibido:', message.body);
+    console.log(`Mensaje recibido en ${client.session}:`, message.body);
 
     // Si el catálogo aún no se ha enviado
     if (!catalogSent) {
